@@ -1,0 +1,35 @@
+version: '3.1'
+
+services:
+
+  gitea:
+    image: gitea/gitea
+    depends_on:
+      - postgres
+    volumes:
+      - /data/gitea/data:/data
+    ports:
+      - 3000:3000
+    deploy:
+      replicas: 1
+      placement:
+         constraints:
+            - "node.role == manager"
+
+  postgres:
+     image: postgres:alpine 
+     volumes:
+       - db_data:/var/lib/postgresql/data
+     ports:
+       - 5432:5432
+     environment:
+       POSTGRES_USER: gitea
+       POSTGRES_PASSWORD: example
+     deploy:
+        replicas: 1
+        placement:
+          constraints:
+            - "node.role == manager"
+
+volumes:
+   db_data:
